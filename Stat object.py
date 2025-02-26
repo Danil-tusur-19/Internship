@@ -1,4 +1,5 @@
 import cv2
+import time
 
 # Подключаемся к камере
 cap = cv2.VideoCapture(0)
@@ -22,9 +23,14 @@ while cap.isOpened():
             # показать итоговый кадр
 
             frame_out = frame.copy()
+
+
             for cnt in large_contours:
                 x, y, w, h = cv2.boundingRect(cnt)
                 frame_out = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 200), 3)
+                #сохранение каждого выделенного объекта
+                object_image = frame[y:y + h, x:x + w]
+                cv2.imwrite(f'object_{time.time()}.jpg', object_image)
 
             # отображаем результат
             cv2.imshow('Frame_final', frame_out)
