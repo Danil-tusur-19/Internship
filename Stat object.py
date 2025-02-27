@@ -1,6 +1,5 @@
 import cv2
-import time
-import os
+
 
 # Подключаемся к камере
 cap = cv2.VideoCapture(0)
@@ -8,6 +7,8 @@ cap = cv2.VideoCapture(0)
 # Создаем объект для вычитания фона
 fgbg = cv2.createBackgroundSubtractorMOG2()
 
+#Объект для записи видео если есть движение
+video = cv2.VideoWriter('test_video.mp4v', cv2.VideoWriter_fourcc(*'mp4v'), 60.0, (640,480))
 
 while cap.isOpened():
         # Захват кадр за кадром
@@ -25,12 +26,10 @@ while cap.isOpened():
 
             frame_out = frame.copy()
 
-
             for cnt in large_contours:
                 x, y, w, h = cv2.boundingRect(cnt)
                 frame_out = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 200), 3)
-                cv2.imwrite(f'object_{time.time()}.jpg', frame_out)
-
+                video.write(frame_out)
             # отображаем результат
             cv2.imshow('Frame_final', frame_out)
 
@@ -39,5 +38,6 @@ while cap.isOpened():
                 break
 
 cap.release()
+video.release()
 cv2.destroyAllWindows()
 
